@@ -1,0 +1,10 @@
+{
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "editor.formatOnSave": true,
+  "json.format.enable": true,
+  "javascript.format.enable": true,
+  "typescript.format.enable": true,
+  "editor.tabSize": 2,
+  "typescript.preferences.importModuleSpecifier": "non-relative"
+}
