@@ -41,6 +41,12 @@ export default function Home() {
     console.log('onBattleMultiCharacter.data', { data })
   }
 
+  const onSkillMultiCharacter = async () => {
+    const { data } = await client.post('/api/v1/actions/skill')
+
+    console.log('onSkillMultiCharacter.data', { data })
+  }
+
   return (
     <div className={styles.page}>
       {/* <button onClick={testGetAPI}>GET API</button>
@@ -65,27 +71,14 @@ export default function Home() {
           <button onClick={onConfirmAction}>Confirm action</button>
         </div>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <b>Maybe battle-zone</b>
+          <b>Zone: Battle</b>
           <button onClick={onBattleSingleCharacter}>Battle single char</button>
           <button onClick={onBattleMultiCharacter}>Battle multi char</button>
+          <hr style={{ marginTop: '1rem' }} />
+          <b>Zone: Skills</b>
+          <button onClick={onSkillMultiCharacter}>Skill multi char</button>
         </div>
       </section>
     </div>
   )
-}
-
-const battleSelector = {
-  emptyHunt: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[2]/div/div/div/div[1]/button',
-  timeHunt: '//*[@id="game-container"]/div/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/span',
-  maxBattleBtn: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[1]/button',
-  maxBattleCount: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[1]/button/div',
-  huntAgain: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[2]/div/div[2]/div[2]/button',
-  boss: {
-    waitTime: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[4]/div/div/button/div/span',
-    start: '//*[@id="game-container"]/div/div[2]/div[2]/div/div[2]/div/div[2]/form/div/button',
-  },
-  dungeons: {
-    select: '//*[@id="game-container"]/div/div[2]/div[1]/div[1]/div[6]/div/div/button[1]',
-    start: '',
-  },
 }
