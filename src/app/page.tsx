@@ -29,6 +29,18 @@ export default function Home() {
     console.log('test.PostAPI.data', { data })
   }
 
+  const onBattleSingleCharacter = async () => {
+    const { data } = await client.post('/api/v1/actions')
+
+    console.log('onBattleSingleCharacter.data', { data })
+  }
+
+  const onBattleMultiCharacter = async () => {
+    const { data } = await client.post('/api/v1/actions/battle/multi')
+
+    console.log('onBattleMultiCharacter.data', { data })
+  }
+
   return (
     <div className={styles.page}>
       {/* <button onClick={testGetAPI}>GET API</button>
@@ -54,6 +66,8 @@ export default function Home() {
         </div>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <b>Maybe battle-zone</b>
+          <button onClick={onBattleSingleCharacter}>Battle single char</button>
+          <button onClick={onBattleMultiCharacter}>Battle multi char</button>
         </div>
       </section>
     </div>
