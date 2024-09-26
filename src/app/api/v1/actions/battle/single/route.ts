@@ -39,7 +39,11 @@ async function activeOnChange(page: Page) {
     await page.waitForSelector(battleSelector.timeHunt)
     const huntTime = await page.locator(battleSelector.timeHunt).innerText()
     console.log('huntTime', huntTime)
-    const calTime = huntTime.split(':').reduceRight((acc, cur, index) => acc + Number(cur) * 60 ** index, 1) * 1000
+    const calTime =
+      huntTime
+        .split(':')
+        .reverse()
+        .reduce((acc, cur, index) => acc + Number(cur) * 60 ** index, 1) * 1000
     console.log('calTime', calTime)
     await page.waitForTimeout(calTime)
 
