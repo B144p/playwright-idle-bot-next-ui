@@ -20,17 +20,14 @@ export default function Home() {
     console.log('test.GetAPI.data', { data })
   }
 
-  const testPostAPI = async () => {
-    const { data } = await client.post<PostRequestBody>('/api/v1/login', {
-      title: 'My Post Title',
-      content: 'This is the content of the post',
-    })
+  const onFullLogin = async () => {
+    const { data } = await client.post('/api/v1/login')
 
-    console.log('test.PostAPI.data', { data })
+    console.log('onFullLogin.data', { data })
   }
 
   const onBattleSingleCharacter = async () => {
-    const { data } = await client.post('/api/v1/actions')
+    const { data } = await client.post('/api/v1/actions/battle/single')
 
     console.log('onBattleSingleCharacter.data', { data })
   }
@@ -59,6 +56,9 @@ export default function Home() {
           <button onClick={() => onNavigate('login')}>Goto Login</button>
           <button onClick={onFillFormLogin}>Fill form</button>
           <button onClick={onLogin}>Submit Login</button>
+          <hr style={{ marginTop: '1rem' }} />
+          <b>Zone: General-action</b>
+          <button onClick={onFullLogin}>Full Login</button>
         </div>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <b>Zone: Skill Activation</b>

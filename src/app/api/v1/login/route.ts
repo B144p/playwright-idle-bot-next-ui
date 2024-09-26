@@ -1,5 +1,7 @@
 // api > v1 > login > route.ts
 import { PostRequestBody } from '@/app/api/v1/login/(interfaces)'
+import { getBrowserPage } from '@/lib/api/browser'
+import { decrypt } from '@/lib/utils/crypto'
 import { NextRequest, NextResponse } from 'next/server'
 
 export async function GET() {
@@ -14,20 +16,29 @@ export async function GET() {
   }
 }
 
-export async function POST(request: NextRequest) {
+export async function POST(_request: NextRequest) {
+  // const body: PostRequestBody = await request.json()
+  const username = process.env.NEXT_PUBLIC_USERNAME ?? ''
+  const password = process.env.NEXT_PUBLIC_PASSWORD ?? ''
+
   try {
-    const body: PostRequestBody = await request.json()
-    if (typeof body.title !== 'string' || typeof body.content !== 'string') {
-      return NextResponse.json({ message: 'Invalid input. Both title and content must be strings.' }, { status: 400 })
+    const browserPage = await getBrowserPage()
+    await browserPage.goto('https://web.idle-mmo.com/login')
+
+    if (!username || !password) {
+      return NextResponse.json({ message: 'Username or Password is not correct!' }, { status: 500 })
     }
+
+    await browserPage.locator('#email').fill(decrypt(username))
+    await browserPage.locator('#password').fill(decrypt(password))
+    await browserPage.click('button[type="submit"]')
 
     const response = {
-      message: 'Post created successfully!',
-      data: body,
+      message: 'Login successfully!',
     }
 
-    return NextResponse.json(response, { status: 201 })
+    return NextResponse.json(response, { status: 200 })
   } catch (error) {
-    return NextResponse.json({ message: 'An error occurred', error: error }, { status: 500 })
+    return NextResponse.json({ message: 'An error occurred', error: error }, { status: 400 })
   }
 }

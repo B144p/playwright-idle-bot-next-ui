@@ -7,5 +7,6 @@ export const encrypt = (cipherText: any) => {
 }
 
 export const decrypt = (cipherText: string) => {
-  return CryptoJS.AES.decrypt(cipherText.toString(), KEY).toString(CryptoJS.enc.Utf8)
+  const decryptText = cryptoJS.AES.decrypt(cipherText.toString(), KEY).toString(cryptoJS.enc.Utf8)
+  return decryptText.substring(1, decryptText.length - 1)
 }
