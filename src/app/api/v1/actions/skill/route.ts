@@ -1,6 +1,5 @@
 import { skillSelector } from '@/app/api/v1/actions/battle/constant'
 import { ICharacter } from '@/app/api/v1/actions/battle/multi/(interfaces)'
-import { TNavigateMode } from '@/app/api/v1/navigate/[mode]/(interfaces)'
 import { getBrowserPage } from '@/lib/api/browser'
 import { navigateMode, onSwitchCharacter } from '@/lib/utils'
 import { NextRequest, NextResponse } from 'next/server'
@@ -9,7 +8,7 @@ import { Page } from 'playwright'
 export async function POST(_request: NextRequest) {
   try {
     const browserPage = await getBrowserPage()
-    onSkillActivate(browserPage, 'woodcutting', 80 * 60 * 1000)
+    onTop(browserPage)
 
     const response = {
       message: `Action success.`,
@@ -20,43 +19,49 @@ export async function POST(_request: NextRequest) {
   }
 }
 
+const onTop = async (browserPage: Page) => {
+  // await sleep(45 * 1000)
+  await onSkillActivateChain(browserPage, 80 * 60 * 1000)
+}
+
 const onSelectSkilPath = (index: number) =>
   `//*[@id="game-container"]/div[1]/div[1]/div[3]/div[2]/ul/button[${index}]/li`
+
+const onSelectCrystalPath = (index: number) => [
+  '//*[@id="menu-button"]',
+  `//*[@id="game-container"]/div[2]/div[2]/div/div[2]/button[${index + 1}]`,
+]
 
 const characters: ICharacter[] = [
   {
     name: 'bTset',
     duration: { maxSkill: 100 * 60 * 1000 },
-    // chainAction: [onSelectSkilPath(3), skillDialogSubmitSelector],
-    chainAction: onSelectSkilPath(3),
+    action: 'woodcutting',
+    chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
   },
   {
     name: 'bTsetRo',
     duration: { maxSkill: 80 * 60 * 1000 },
-    // chainAction: [
-    //   onSelectSkilPath(3),
-    // '//*[@id="menu-button"]',
-    // '//*[@id="game-container"]/div[2]/div[2]/div/div[2]/button[2]',
-    //   skillDialogSubmitSelector,
-    // ],
-    chainAction: onSelectSkilPath(3),
+    action: 'woodcutting',
+    chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
   },
 ]
 
-async function onSkillActivate(page: Page, skill: TNavigateMode, time: number) {
+async function onSkillActivateChain(page: Page, time: number) {
   try {
     for (const [i, data] of characters.entries()) {
+      const { chainAction, action } = data
+
       await onSwitchCharacter(page, i + 1)
       await page.waitForTimeout(2000)
-      await page.goto(navigateMode(skill))
+      await page.goto(navigateMode(action))
       await page.waitForTimeout(2000)
-      // data.chainAction.map(async (action) => {
-      //   await page.locator(action).click()
-      //   await sleep(2000)
-      // })
-      await page.locator(data.chainAction).click()
-      await page.waitForTimeout(2000)
-      await page.locator(skillSelector.dialogSubmit).click()
+
+      for (let i = 0; i < chainAction.length; i++) {
+        await page.waitForSelector(chainAction[i])
+        await page.locator(chainAction[i]).click()
+        await page.waitForTimeout(2000)
+      }
     }
 
     // Waiting for next loop with (time + 2.5 min) that +- 2.5 min
@@ -65,5 +70,5 @@ async function onSkillActivate(page: Page, skill: TNavigateMode, time: number) {
     console.error('Error in activeOnChange:', error)
   }
 
-  await onSkillActivate(page, skill, time)
+  await onSkillActivateChain(page, time)
 }

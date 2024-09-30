@@ -1,3 +1,5 @@
+import { TNavigateMode } from '@/app/api/v1/navigate/[mode]/(interfaces)'
+
 export interface IQueueTask {
   char: number
   action: () => void
@@ -10,8 +12,8 @@ export interface ICharacter {
     maxSkill: number
     boss?: number
   }
-  // chainAction: string[]
-  chainAction: string
+  action: Exclude<TNavigateMode, 'login' | 'inventory' | 'market' | 'vendor' | 'battle' | 'pets' | 'guilds'>
+  chainAction: string[]
 }
 
 interface IActionSkill {
