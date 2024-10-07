@@ -29,4 +29,5 @@ export const navigateMode = (mode: TNavigateMode) => {
 
 export const onSwitchCharacter = async (page: Page, index: number) => {
   await page.keyboard.press(`Alt+${index}`)
+  await page.waitForURL('**', { waitUntil: 'networkidle' })
 }

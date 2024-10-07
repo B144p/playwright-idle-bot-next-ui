@@ -11,7 +11,7 @@ let currentChar: number = 1
 const characters = [{ name: 'bTset' }, { name: 'bTsetRo' }]
 
 const WAIT_TIMEOUT = 1000
-const BATTLE_TIMEOUT = 1000 * 35
+const BATTLE_TIMEOUT = 1000 * 30
 
 export async function POST(_request: NextRequest) {
   try {
@@ -28,6 +28,7 @@ export async function POST(_request: NextRequest) {
 }
 
 const onStartBattle = async (page: Page) => {
+  let errorCount = 0
   while (true) {
     try {
       let waitHuntingTime = 0
@@ -36,7 +37,7 @@ const onStartBattle = async (page: Page) => {
         waitHuntingTime = await onHunt(page)
         await page.waitForTimeout(WAIT_TIMEOUT)
       }
-      await page.waitForTimeout(waitHuntingTime - 3000)
+      await page.waitForTimeout(waitHuntingTime - characters.length * WAIT_TIMEOUT * 3)
 
       await processCharacters(page, onBattleAction)
       await page.waitForTimeout(BATTLE_TIMEOUT)
@@ -44,14 +45,15 @@ const onStartBattle = async (page: Page) => {
       await processCharacters(page, onBattleAction)
       await page.waitForTimeout(BATTLE_TIMEOUT)
     } catch (error) {
-      console.error('Error in activeOnChange:', error)
+      errorCount += 1
+      console.error(`Error count: ${errorCount}`, 'Error in activeOnChange:', error)
       await page.waitForTimeout(WAIT_TIMEOUT)
     }
   }
 }
 
 const processCharacters = async (page: Page, action: (page: Page) => Promise<void>) => {
-  for (const [i] of characters.entries()) {
+  for await (const [i] of characters.entries()) {
     await switchCharacterAndNavigate(page, i + 1, navigateMode('battle'))
     await action(page)
   }
@@ -65,11 +67,11 @@ const switchCharacterAndNavigate = async (page: Page, characterIndex: number, mo
 }
 
 const onHunt = async (page: Page) => {
-  const emptyHuntBtn = page.locator(battleSelector.emptyHunt)
-  const huntAgainBtn = page.locator(battleSelector.huntAgain)
-
-  const isEmptyHuntBtnVisible = await emptyHuntBtn.isVisible()
-  await (isEmptyHuntBtnVisible ? emptyHuntBtn.click() : huntAgainBtn.click())
+  const huntElementExist = await Promise.race([
+    page.waitForSelector(battleSelector.emptyHunt),
+    page.waitForSelector(battleSelector.huntAgain),
+  ])
+  await huntElementExist.click() // wait for hunt element
 
   // wait for hunting
   await page.waitForSelector(battleSelector.timeHunt)
