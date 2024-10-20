@@ -1,5 +1,6 @@
 'use client'
 
+import { IPostRequest as ITestApiActionRequest } from '@/app/api/test/actions/route'
 import { PostRequestBody } from '@/app/api/v1/login/(interfaces)'
 import { useLogin } from '@/app/hooks/use-login'
 import { useOpenBrowser } from '@/app/hooks/use-open-browser'
@@ -44,6 +45,12 @@ export default function Home() {
     console.log('onSkillMultiCharacter.data', { data })
   }
 
+  const onTestBattle = async (mode: ITestApiActionRequest['action']) => {
+    const { data } = await client.post<ITestApiActionRequest>('/api/test/actions', { action: mode })
+
+    console.log('onTest.data', mode, { data })
+  }
+
   return (
     <div className={styles.page}>
       {/* <button onClick={testGetAPI}>GET API</button>
@@ -77,6 +84,28 @@ export default function Home() {
           <hr style={{ marginTop: '1rem' }} />
           <b>Zone: Skills</b>
           <button onClick={onSkillMultiCharacter}>Skill multi char</button>
+        </div>
+      </section>
+      <hr style={{ marginTop: '1rem', width: '100%' }} />
+      <section style={{ width: '100%', display: 'flex', gap: 16 }}>
+        <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <b>Test-Zone: Battle</b>
+          <button onClick={() => onTestBattle('select-enemy')}>select-enemy</button>
+          <button onClick={() => onTestBattle('add-food')}>add-food</button>
+          <button onClick={() => onTestBattle('select-food')}>select-food</button>
+          <button onClick={() => onTestBattle('select-stance')}>select-stance</button>
+          <button onClick={() => onTestBattle('battle')}>Confirm battle</button>
+          <hr style={{ marginTop: '1rem' }} />
+          <b>Chain</b>
+          <button onClick={() => onTestBattle('chain-battle')}>Battle-chain</button>
+          <button onClick={() => onTestBattle('get-queue')}>Get task</button>
+          <button onClick={() => onTestBattle('exec-queue')}>Exec queue</button>
+        </div>
+        <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <b>Test-Zone: Test</b>
+        </div>
+        <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
+          <b>Test-Zone: Test</b>
         </div>
       </section>
     </div>

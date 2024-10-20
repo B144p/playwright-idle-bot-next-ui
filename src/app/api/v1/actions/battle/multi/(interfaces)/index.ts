@@ -8,6 +8,7 @@ export interface IQueueTask {
 
 export interface ICharacter {
   name: string
+  charIndex: number
   duration: {
     maxSkill: number
     boss?: number

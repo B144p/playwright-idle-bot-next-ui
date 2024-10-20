@@ -7,7 +7,7 @@
   --button-secondary-hover: #f2f2f2;
 
   display: grid;
-  grid-template-rows: 20px 1fr 20px;
+  /* grid-template-rows: 20px 1fr 20px; */
   align-items: center;
   justify-items: center;
   min-height: 100svh;

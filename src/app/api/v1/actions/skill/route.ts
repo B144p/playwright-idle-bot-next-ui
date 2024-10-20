@@ -1,7 +1,7 @@
 import { skillSelector } from '@/app/api/v1/actions/battle/constant'
 import { ICharacter } from '@/app/api/v1/actions/battle/multi/(interfaces)'
 import { getBrowserPage } from '@/lib/api/browser'
-import { navigateMode, onSwitchCharacter } from '@/lib/utils'
+import { navigateMode, onSwitchCharacter, sleep } from '@/lib/utils'
 import { NextRequest, NextResponse } from 'next/server'
 import { Page } from 'playwright'
 
@@ -20,12 +20,16 @@ export async function POST(_request: NextRequest) {
 }
 
 const onTop = async (browserPage: Page) => {
-  // await sleep(45 * 1000)
-  await onSkillActivateChain(browserPage, 80 * 60 * 1000)
+  // const wait = 75 * 60 * 1000
+  // console.log(`wait.start : ${wait / (60 * 1000)} min`)
+  // await sleep(wait)
+  console.log('onSkillActivateChain.start')
+  await onSkillActivateChain(browserPage, 120 * 60 * 1000)
+  console.log('onSkillActivateChain.end')
 }
 
 const onSelectSkilPath = (index: number) =>
-  `//*[@id="game-container"]/div[1]/div[1]/div[3]/div[2]/ul/button[${index}]/li`
+  `//*[@id="game-container"]/div[1]/div[1]/div[2]/div[2]/ul/button[${index}]/li`
 
 const onSelectCrystalPath = (index: number) => [
   '//*[@id="menu-button"]',
@@ -35,24 +39,40 @@ const onSelectCrystalPath = (index: number) => [
 const characters: ICharacter[] = [
   {
     name: 'bTset',
+    charIndex: 1,
     duration: { maxSkill: 100 * 60 * 1000 },
-    action: 'woodcutting',
+    action: 'mining',
     chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
   },
   {
     name: 'bTsetRo',
+    charIndex: 2,
     duration: { maxSkill: 80 * 60 * 1000 },
     action: 'woodcutting',
-    chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+    chainAction: [onSelectSkilPath(2), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+  },
+  // {
+  //   name: 'bTsetLum',
+  //   charIndex: 3,
+  //   duration: { maxSkill: 80 * 60 * 1000 },
+  //   action: 'woodcutting',
+  //   chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(3), skillSelector.dialogSubmit],
+  // },
+  {
+    name: 'bTsetCurse',
+    charIndex: 4,
+    duration: { maxSkill: 80 * 60 * 1000 },
+    action: 'woodcutting',
+    chainAction: [onSelectSkilPath(1), '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[2]/form/div/button'],
   },
 ]
 
 async function onSkillActivateChain(page: Page, time: number) {
   try {
     for (const [i, data] of characters.entries()) {
-      const { chainAction, action } = data
+      const { chainAction, action, charIndex } = data
 
-      await onSwitchCharacter(page, i + 1)
+      await onSwitchCharacter(page, charIndex)
       await page.waitForTimeout(2000)
       await page.goto(navigateMode(action))
       await page.waitForTimeout(2000)
@@ -65,7 +85,7 @@ async function onSkillActivateChain(page: Page, time: number) {
     }
 
     // Waiting for next loop with (time + 2.5 min) that +- 2.5 min
-    await page.waitForTimeout(time + Math.random() * (5 * 60 * 1000))
+    await page.waitForTimeout(time + 1 * 1000)
   } catch (error) {
     console.error('Error in activeOnChange:', error)
   }
