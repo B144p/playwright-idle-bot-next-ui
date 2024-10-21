@@ -13,7 +13,3 @@ export const battleSelector = {
     start: '',
   },
 }
-
-export const skillSelector = {
-  dialogSubmit: '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[3]/form/div/button',
-}

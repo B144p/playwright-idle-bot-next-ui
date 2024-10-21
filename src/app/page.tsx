@@ -102,7 +102,8 @@ export default function Home() {
           <button onClick={() => onTestBattle('exec-queue')}>Exec queue</button>
         </div>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
-          <b>Test-Zone: Test</b>
+          <b>Test-Zone: Queue</b>
+          <button onClick={() => onTestBattle('get-all-task')}>Loop get-all-task</button>
         </div>
         <div style={{ flexGrow: 1, display: 'flex', flexDirection: 'column', gap: 8 }}>
           <b>Test-Zone: Test</b>

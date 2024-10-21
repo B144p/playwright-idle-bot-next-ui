@@ -4,7 +4,7 @@ import { calculateTime, navigateMode } from '@/lib/utils'
 import moment from 'moment'
 import { NextRequest, NextResponse } from 'next/server'
 import { Page } from 'playwright'
-import { addQueue, executeQueue } from '../../../../lib/api/queue/queue'
+import { addQueue, executeQueue, getAllTask } from '../../../../lib/api/queue/queue'
 
 export interface IPostRequest {
   action:
@@ -18,6 +18,7 @@ export interface IPostRequest {
     | 'chain-battle'
     | 'get-queue'
     | 'exec-queue'
+    | 'get-all-task'
 }
 
 export async function POST(request: NextRequest) {
@@ -49,6 +50,9 @@ export async function POST(request: NextRequest) {
         break
       case 'exec-queue':
         await executeQueue()
+        break
+      case 'get-all-task':
+        await getAllTask()
         break
       default:
         break

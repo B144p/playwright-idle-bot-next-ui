@@ -21,6 +21,11 @@ export const battleSelector = {
   timeBattle: '//*[@id="game-container"]/div/div[2]/div[1]/div[2]/div[1]/div[2]/div[1]/div/div/span',
 }
 
+export const skillSelector = {
+  dialogSubmit: '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[3]/form/div/button',
+  timeSkill: '//*[@id="game-container"]/div[1]/div[2]/div[2]/div[2]/div/div[1]/div/div/span',
+}
+
 export enum EBattleMode {
   empty,
   hunting,

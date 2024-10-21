@@ -1,8 +1,11 @@
 import { ICharacter } from '@/app/api/v1/actions/battle/multi/(interfaces)'
 import { getBrowserPage } from '@/lib/api/browser'
 import { IQueueTask } from '@/lib/api/queue/interfaces'
-import { onSwitchCharacter } from '@/lib/utils'
+import { calculateTime, navigateMode, onSwitchCharacter } from '@/lib/utils'
 import moment from 'moment'
+import { getActiveChar } from '../character/character'
+import { Page } from 'playwright'
+import { skillSelector } from '@/app/api/test/actions/(constances)'
 
 let queueTasks: IQueueTask[] = []
 
@@ -29,7 +32,41 @@ const sortQueue = (queue: IQueueTask[]) => {
   return queue.sort((a, b) => moment(a.triggerDate).diff(b.triggerDate))
 }
 
-const getAllQueue = async () => {}
+const getAllQueue = async () => {
+  return queueTasks
+}
+
+export const getAllTask = async () => {
+  const page = await getBrowserPage()
+
+  const { characters } = await getActiveChar()
+
+  for await (const [_i, data] of characters.entries()) {
+    const {
+      charIndex,
+      skill: { mode },
+    } = data
+    await onSwitchCharacter(page, charIndex)
+    await page.waitForTimeout(2000)
+    await page.goto(navigateMode(mode))
+    await page.waitForTimeout(2000)
+
+    await addQueue({
+      char: charIndex,
+      action: async () => {},
+      triggerDate: moment().add(await getTimeBattle(page), 'milliseconds'),
+    })
+  }
+
+  await page.waitForTimeout(2000)
+  console.log('getAllTask.allQueue', getAllQueue())
+}
+
+const getTimeBattle = async (page: Page) => {
+  await page.waitForSelector(skillSelector.timeSkill)
+  const timeString = await page.locator(skillSelector.timeSkill).innerText()
+  return calculateTime(timeString)
+}
 
 const getHuntingTask = async (characters: ICharacter[]) => {
   const page = await getBrowserPage()
