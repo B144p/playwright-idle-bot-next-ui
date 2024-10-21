@@ -10,6 +10,7 @@ export const navigateMode = (mode: TNavigateMode) => {
     case 'smelting':
     case 'cooking':
     case 'forge':
+    case 'shadow-mastery':
       return `https://web.idle-mmo.com/skills/view/${mode}`
     case 'inventory':
     case 'battle':

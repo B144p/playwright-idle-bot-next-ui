@@ -20,7 +20,7 @@ export async function POST(_request: NextRequest) {
 }
 
 const onTop = async (browserPage: Page) => {
-  // const wait = 75 * 60 * 1000
+  // const wait = 140 * 60 * 1000
   // console.log(`wait.start : ${wait / (60 * 1000)} min`)
   // await sleep(wait)
   console.log('onSkillActivateChain.start')
@@ -41,15 +41,17 @@ const characters: ICharacter[] = [
     name: 'bTset',
     charIndex: 1,
     duration: { maxSkill: 100 * 60 * 1000 },
-    action: 'mining',
-    chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+    action: 'shadow-mastery',
+    // chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+    chainAction: [onSelectSkilPath(3), '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[2]/form/div/button'],
   },
   {
     name: 'bTsetRo',
     charIndex: 2,
     duration: { maxSkill: 80 * 60 * 1000 },
-    action: 'woodcutting',
-    chainAction: [onSelectSkilPath(2), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+    action: 'shadow-mastery',
+    // chainAction: [onSelectSkilPath(3), ...onSelectCrystalPath(1), skillSelector.dialogSubmit],
+    chainAction: [onSelectSkilPath(3), '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[2]/form/div/button'],
   },
   // {
   //   name: 'bTsetLum',
@@ -62,8 +64,8 @@ const characters: ICharacter[] = [
     name: 'bTsetCurse',
     charIndex: 4,
     duration: { maxSkill: 80 * 60 * 1000 },
-    action: 'woodcutting',
-    chainAction: [onSelectSkilPath(1), '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[2]/form/div/button'],
+    action: 'shadow-mastery',
+    chainAction: [onSelectSkilPath(3), '//*[@id="game-container"]/div[2]/div[1]/div/div[2]/div/div[2]/form/div/button'],
   },
 ]
 

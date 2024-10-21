@@ -8,6 +8,7 @@ export type TNavigateMode =
   | 'smelting'
   | 'cooking'
   | 'forge'
+  | 'shadow-mastery'
   | 'market'
   | 'vendor'
   | 'battle'
